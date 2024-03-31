@@ -7,7 +7,6 @@ from app.models import User
 
     
 class EditUserForm(FlaskForm):
-    handle = StringField('handle')
     profile_picture = FileField('profile_picture', validators=[FileAllowed(list(ALLOWED_EXTENSIONS))])
     banner_picture = FileField('banner_picture', validators=[FileAllowed(list(ALLOWED_EXTENSIONS))])
     bio = StringField('bio')
