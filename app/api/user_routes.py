@@ -71,6 +71,7 @@ def edit_user(id):
             user.banner_picture = url
             db.session.commit()
 
+        user.handle = form.data['handle'] 
         user.bio = form.data['bio']
         user.birth_date = form.data['birth_date']
         user.location = form.data['location']
