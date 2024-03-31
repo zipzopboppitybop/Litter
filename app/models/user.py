@@ -10,9 +10,18 @@ class User(db.Model, UserMixin):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(40), nullable=False, unique=True)
+    username = db.Column(db.String(15), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+    handle = db.Column(db.String(40), nullable=False)
+    profile_picture = db.Column(db.String )
+    banner_picture = db.Column(db.String )
+    bio = db.Column(db.String(255))
+    birth_date = db.Column(db.Date, nullable=False)
+    location = db.Column(db.String(255))
+    website = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
 
     @property
     def password(self):
@@ -29,5 +38,12 @@ class User(db.Model, UserMixin):
         return {
             'id': self.id,
             'username': self.username,
-            'email': self.email
+            'email': self.email,
+            'handle': self.handle,
+            'profile_picture': self.profile_picture,
+            'banner_picture': self.banner_picture,
+            'bio': self.bio,
+            'birth_date': self.birth_date,
+            'location': self.location,
+            'website': self.website,
         }
