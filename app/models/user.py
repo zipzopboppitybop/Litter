@@ -23,6 +23,8 @@ class User(db.Model, UserMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
 
+    posts = db.relationship('Post', back_populates='owner', cascade='all, delete-orphan')
+
     @property
     def password(self):
         return self.hashed_password
@@ -46,4 +48,5 @@ class User(db.Model, UserMixin):
             'birth_date': self.birth_date,
             'location': self.location,
             'website': self.website,
+            'posts': [post.to_dict() for post in self.posts],
         }
