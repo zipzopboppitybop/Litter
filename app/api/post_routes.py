@@ -90,3 +90,116 @@ def create_post():
 
         return post.to_dict()
     return {'errors': validation_errors_to_error_messages(form.errors)}, 401
+
+
+@post_routes.route('/<int:id>/edit', methods=['PUT'])
+@login_required
+def edit_post(id):
+    """
+    Edit a post
+    """
+    form = PostForm()
+    form['csrf_token'].data = request.cookies['csrf_token']
+
+    if form.validate_on_submit():
+        post = Post.query.get(id)
+
+        if post is None:
+            return {"errors": "Post not found"}, 404
+        
+        if current_user.id != post.user_id:
+            return {"errors": "Unauthorized"}, 401
+
+        post.content = form.data['content']
+        db.session.commit()
+
+        if form.data['file_one']:
+            if post.file_one:
+                remove_file_from_s3(post.file_one)
+
+            file_one = form.data['file_one']
+            file_one_upload = upload_file_to_s3(file_one)
+
+            if "url" not in file_one_upload:
+                return {"errors": "Url not in upload_image"}, 400
+
+            url = file_one_upload["url"]
+            post.file_one = url
+            db.session.commit()
+
+        if form.data['file_two']:
+            if post.file_two:
+                remove_file_from_s3(post.file_two)
+
+            file_two = form.data['file_two']
+            file_two_upload = upload_file_to_s3(file_two)
+
+            if "url" not in file_two_upload:
+                return {"errors": "Url not in upload_image"}, 400
+
+            url = file_two_upload["url"]
+            post.file_two = url
+            db.session.commit()
+
+        if form.data['file_three']:
+            if post.file_three:
+                remove_file_from_s3(post.file_three)
+
+            file_three = form.data['file_three']
+            file_three_upload = upload_file_to_s3(file_three)
+
+            if "url" not in file_three_upload:
+                return {"errors": "Url not in upload_image"}, 400
+
+            url = file_three_upload["url"]
+            post.file_three = url
+            db.session.commit()
+
+        if form.data['file_four']:
+            if post.file_four:
+                remove_file_from_s3(post.file_four)
+
+            file_four = form.data['file_four']
+            file_four_upload = upload_file_to_s3(file_four)
+
+            if "url" not in file_four_upload:
+                return {"errors": "Url not in upload_image"}, 400
+
+            url = file_four_upload["url"]
+            post.file_four = url
+            db.session.commit()
+
+        return post.to_dict()
+    return {'errors': validation_errors_to_error_messages(form.errors)}, 401
+
+
+@post_routes.route('/<int:id>/delete', methods=['DELETE'])
+@login_required
+def delete_post(id):
+    """
+    Delete a post
+    """
+    post = Post.query.get(id)
+
+    if post is None:
+        return {"errors": "Post not found"}, 404
+    
+    if current_user.id != post.user_id:
+        return {"errors": "Unauthorized"}, 401
+
+    if post.file_one:
+        remove_file_from_s3(post.file_one)
+
+    if post.file_two:
+        remove_file_from_s3(post.file_two)
+
+    if post.file_three:
+        remove_file_from_s3(post.file_three)
+
+    if post.file_four:
+        remove_file_from_s3(post.file_four)
+
+    db.session.delete(post)
+    db.session.commit()
+
+    return {'message': 'Post deleted'}
