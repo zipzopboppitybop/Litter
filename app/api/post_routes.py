@@ -23,6 +23,10 @@ def post(id):
     Query for a post by id and returns that post in a dictionary
     """
     post = Post.query.get(id)
+
+    if post is None:
+        return {"errors": "Post not found"}, 404
+
     return post.to_dict()
 
 
