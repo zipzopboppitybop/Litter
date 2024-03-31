@@ -12,4 +12,4 @@ class PostForm(FlaskForm):
     file_two = FileField('file_two', validators=[FileAllowed(list(ALLOWED_EXTENSIONS))])
     file_three = FileField('file_three', validators=[FileAllowed(list(ALLOWED_EXTENSIONS))])
     file_four = FileField('file_four', validators=[FileAllowed(list(ALLOWED_EXTENSIONS))])
-    user_id = IntegerField('owner')
+    user_id = IntegerField('user_id')
